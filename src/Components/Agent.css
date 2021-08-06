@@ -1,0 +1,24 @@
+.navbar{
+      background-color: #e2dbd0 !important;
+}
+.navbar img{
+      max-width: 100px;
+}
+.navbar p{
+      font-size: var(--bs-body-font-size);
+}
+.agent{
+      display: flex;
+      justify-content: center;
+}
+.agent-container{
+      margin: 3rem;
+      padding: 1.5rem;
+      background-color: white;
+      border-radius: 5px;
+      width: 90%;
+      max-width: 1000px;
+}
+.agent .btn{
+      padding: 1px 6px !important;
+}

@@ -13,7 +13,7 @@ const Login = () => {
       const [remember,setRemember] = useState(false);
       const [errorMessage,setErrorMessage] = useState('');
       const [user,setUser] = useState([]);
-      const apiUrl = 'https://localhost:5001/api/Utilisateur/';
+      const apiUrl = process.env.REACT_APP_API+'Utilisateur/';
       const history = useHistory();
 
       const handleClick = (e)=>{
@@ -79,10 +79,10 @@ const Login = () => {
                     </div> 
                     {reset ? (<form className="myform" onSubmit={(e)=>handleClick(e)}>
                         <div className="form-group">
-                              <input autoFocus id="username" type="text" className="form-control" placeholder="Username" value={username} onChange={(e)=>{handleChange();setUsername(e.target.value);}}/> 
+                              <input autoFocus id="username" type="text" className="form-control-login form-control" placeholder="Username" value={username} onChange={(e)=>{handleChange();setUsername(e.target.value);}}/> 
                         </div>
                         <div className="form-group"> 
-                              <input type="password" className="form-control" placeholder="Mot de passe" value={password} onChange={(e)=>{handleChange();setPassword(e.target.value);}}/> 
+                              <input type="password" className="form-control-login form-control" placeholder="Mot de passe" value={password} onChange={(e)=>{handleChange();setPassword(e.target.value);}}/> 
                         </div>
                     <div className="row">
                         <div className="col-md-6 col-12">
