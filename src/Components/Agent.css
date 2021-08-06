@@ -7,6 +7,15 @@
 .navbar p{
       font-size: var(--bs-body-font-size);
 }
+.navbar .dropdown-menu{
+      margin-top: 11px;
+}
+.navbar .dropdown-item{
+      min-width: 200px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+}
 .agent{
       display: flex;
       justify-content: center;

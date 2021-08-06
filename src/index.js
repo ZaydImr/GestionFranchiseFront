@@ -7,6 +7,7 @@ import Admin from './Components/Admin';
 import Franchise from './Components/Franchise';
 import Agent from './Components/Agent';
 import Error from './Components/Error';
+import Account from './Components/Account';
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom'
 
 ReactDOM.render(
@@ -18,6 +19,7 @@ ReactDOM.render(
         <Route path='/administrateur' component={Admin} />
         <Route path='/agent' component={Agent} />
         <Route path='/franchise' component={Franchise} />
+        <Route path='/account' component={Account} />
         <Route path='*' component={Error} />
 
       </Switch>

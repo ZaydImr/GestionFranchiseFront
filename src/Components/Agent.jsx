@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import './Agent.css'
 import logo from '../Assets/logo.png'
 import axios from 'axios';
@@ -9,6 +9,7 @@ const Agent = () => {
       const history = useHistory();
       const [login,setLogin] = useState('');
       const [user,setUser] = useState({});
+      const [typeStorage,setTypeStorage] = useState('');
       const [products,setProducts] = useState([{idProduit:1,nameProduit:'hhha',qteProduit:10}]);
 
       useEffect(()=>{
@@ -20,12 +21,14 @@ const Agent = () => {
             {
                   setLogin(cook.Utilisateur);
                   getProducts(cook.Utilisateur);
+                  setTypeStorage('cookie');
                   return;
             }
             if(sessionStorage.getItem('Utilisateur')!==null && sessionStorage.getItem('typeUtilisateur') === "Agent")
             {
                   setLogin(sessionStorage.getItem('Utilisateur'));
                   getProducts(sessionStorage.getItem('Utilisateur'));
+                  setTypeStorage('session');
                   return;
             }
             history.push('/');
@@ -40,13 +43,29 @@ const Agent = () => {
             });
       }
 
+      const handleLogout=()=>{
+             document.cookie = 'Utilisateur=null; expires='+new Date(2000,1,1).toUTCString();
+            document.cookie = 'typeUtilisateur=null; expires='+new Date(2000,1,1).toUTCString();
+            sessionStorage.removeItem('Utilisateur')
+            sessionStorage.removeItem('typeUtilisateur') 
+            history.push('/');
+      }
+
       return (
             <>
                   {login && <div>
                         <nav className="navbar navbar-light bg-light">
                               <div className="container-fluid">
                               <img src={logo} alt="logo" />
-                              <p className="mb-0">{login}</p>
+                              <div className="dropdown">
+                                    <button className="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {login} &nbsp; <i className="fas fa-user"></i>
+                                    </button>
+                                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                          <Link className="dropdown-item" to="/account">Account &nbsp; <i className="fas fa-cog"></i></Link>
+                                          <button className="dropdown-item" onClick={()=>handleLogout()} >Sign Out &nbsp; <i className="fas fa-sign-out-alt"></i></button>
+                                    </div>
+                              </div>
                               </div>
                               </nav>
                               <div className="agent">
