@@ -12,9 +12,11 @@ const Account = () => {
             numUtilisateur: '',
             emailUtilisateur: '',
             typeUtilisateur: '',
-            idType: 9,
+            idType: 0,
             commands: []
         });
+        const [newUser,setNewUser] = useState({});
+        const [tst,setTst] = useState(true);
 
       useEffect(()=>{
             let cook = document.cookie
@@ -24,7 +26,6 @@ const Account = () => {
             if(cook.Utilisateur!==undefined )
             {
                   getUser(cook.Utilisateur);
-                  console.log('fasdfsdfas');
                   return;
             }
             
@@ -39,6 +40,7 @@ const Account = () => {
       const getUser=(login)=> {
             axios.get(process.env.REACT_APP_API+'utilisateur/user/'+login).then((res)=>{
                   setUser(res.data);
+                  setNewUser(res.data);
             })
       }
 
@@ -59,6 +61,21 @@ const Account = () => {
            history.push('/');
      }
 
+     const handleEditClick=()=>{
+         setTst(false);
+         let name = document.querySelector("#nameUtilisateur");
+         name.focus();
+     }
+
+     const handleValidate=()=>{
+        axios.put(process.env.REACT_APP_API+'Utilisateur/',user).then(()=>{setTst(true);getUser(user.login); });
+     }
+
+     const handleCancel=()=>{
+        setUser(newUser);
+        setTst(true);
+    }
+
       return (
             <div className="container emp-profile">
                   <button className='btn btn-back-profile' type='button' onClick={()=>handleGoBack()}><i className="fas fa-long-arrow-alt-left"></i> Go back</button>
@@ -66,16 +83,8 @@ const Account = () => {
 
             <form >
                 <div className="row">
-                    <div className="col-md-4">
-                        <div className="profile-img">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
-                            <div className="file btn btn-lg btn-primary">
-                                Change Photo
-                                <input type="file" name="file"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
+                    
+                    <div className="col-md-9">
                         <div className="profile-head">
                                     <h5 style={{fontWeight:600}}>
                                         {user.nameUtilisateur}
@@ -91,14 +100,16 @@ const Account = () => {
                             </ul>
                         </div>
                     </div>
-                    <div className="col-md-2">
-                        <input type="button" className="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                    <div className="col-md-3">
+                        {!tst ? (<>
+                            <input type="button" className="btn btn-success"value="Validate" disabled={tst} onClick={()=>handleValidate()} style={{margin: '1.5px 1.5px 1.5px 0'}}/>
+                            <input type="button" className="btn btn-danger"value="Cancel" disabled={tst} onClick={()=>handleCancel()}  style={{margin: '1.5px 0 0 1.5px '}}/>
+                        </>):(
+                        <input type="button" className="profile-edit-btn"value="Edit Profile" disabled={!tst} onClick={()=>handleEditClick()}/>)}
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-md-4">
-                    </div>
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <div className="tab-content profile-tab" id="myTabContent">
                             <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div className="row">
@@ -109,12 +120,12 @@ const Account = () => {
                                                 <p>{user.login}</p>
                                             </div>
                                         </div>
-                                        <div className="row">
+                                        <div className="row">   
                                             <div className="col-md-6">
                                                 <label>Fullname</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>{user.nameUtilisateur.toUpperCase()}</p>
+                                                <input id='nameUtilisateur' autoFocus value={user.nameUtilisateur} onChange={(e)=>setUser({...user,nameUtilisateur : e.target.value.toUpperCase()})} disabled={tst}/>
                                             </div>
                                         </div>
                                         <div className="row">
@@ -122,7 +133,7 @@ const Account = () => {
                                                 <label>Email</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>{user.emailUtilisateur}</p>
+                                                <input type='email' value={user.emailUtilisateur} onChange={e=>setUser({...user,emailUtilisateur : e.target.value})}  disabled={tst}/>
                                             </div>
                                         </div>
                                         <div className="row">
@@ -130,7 +141,7 @@ const Account = () => {
                                                 <label>Phone</label>
                                             </div>
                                             <div className="col-md-6">
-                                                <p>{user.numUtilisateur}</p>
+                                                <input type='email' value={user.numUtilisateur} onChange={e=>setUser({...user,numUtilisateur : e.target.value})} disabled={tst}/>
                                             </div>
                                         </div>
                                         <div className="row">

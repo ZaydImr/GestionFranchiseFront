@@ -28,6 +28,23 @@
       width: 90%;
       max-width: 1000px;
 }
+.agent-search{
+      background-color: rgba(0,0,0,.05);
+      border-radius: 3px 3px 0 0;
+      border: 0;
+}
+.agent-search input{
+      background-color: rgba(0,0,0,.05);
+      width: 80%;
+      border-radius: 3px 0 0 3px;
+      border: 0;
+      padding: .5rem;
+}
+.agent .agent-search .btn{
+      width: 20%;
+      border-radius: 0 3px 3px 0;
+      padding: .5rem 0 !important;
+}     
 .agent .btn{
       padding: 1px 6px !important;
 }

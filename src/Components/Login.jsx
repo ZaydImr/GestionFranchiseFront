@@ -36,7 +36,7 @@ const Login = () => {
                         {
                               setUser(res.data);
                         }
-                  });
+                  }).catch(err=>setErrorMessage(err.message));
             }
       }
       const handleChange=()=>{
