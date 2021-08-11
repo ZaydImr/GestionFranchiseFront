@@ -88,7 +88,7 @@ body {
       margin: auto;
       padding: 2rem 0;
   }
-  .form-control:focus {
+  .card  .form-control:focus {
       border: 1px solid ;
       border-radius: 3px;
       box-shadow: none;
@@ -109,13 +109,13 @@ body {
       margin-top: 8px !important
   }
   
-  .btn-primary {
+ .card .btn-primary {
       background: linear-gradient(135deg, #d1c2ad 39%, #ae9168      101%);
       border: none;
       border-radius: 50px;
   }
   
-  .btn-primary:focus {
+ .card .btn-primary:focus {
       box-shadow: none;
       border: none
   }
@@ -124,14 +124,14 @@ body {
       color: black;
       font-weight: 700;
   }
-  .form-check-input {
+ .card .form-check-input {
       margin-top: 4px !important;
   }
-  .form-check-input:checked {
+  .card .form-check-input:checked {
       background-color: #ae9168;
       border-color: #ae9168;
   }
-  .form-check-input:focus {
+  .card .form-check-input:focus {
       box-shadow: 0 0 10px 2px #ae9168 ;
   }
   .far.fa-user {

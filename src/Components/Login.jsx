@@ -61,7 +61,7 @@ const Login = () => {
                   else if(user.typeUtilisateur === "Administrateur")
                         history.push('/administrateur');
                   else if(user.typeUtilisateur === "Franchise")
-                        history.push('/franchise');
+                        history.push('/franchise/produits');
             }
       },[user])
 
