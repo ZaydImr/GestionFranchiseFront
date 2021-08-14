@@ -25,6 +25,7 @@ const Agent = () => {
       const [modalIsOpen2, setIsOpen2] = useState(false);
       const [isProduits,setIsProduits] = useState(true);
       const [agents,setAgents] = useState([])
+      const [loading,setLoanding] = useState(true)
 
       useEffect(()=>{
             if(document.location.pathname==='/franchise/agents')
@@ -56,6 +57,7 @@ const Agent = () => {
                   getAgents(res.data.idType);
                   axios.get(process.env.REACT_APP_API+'produits/'+res.data.idType).then((res)=>{
                         setProducts(res.data);
+                        setLoanding(false);
                   });
             });
       }
@@ -129,6 +131,7 @@ const Agent = () => {
       return (
             <Router>
                   {login && <div>
+                        {loading ? (<div className='loading'><img src='https://motiongraphicsphoebe.files.wordpress.com/2018/10/loading-animations-preloader-gifs-ui-ux-effects-18.gif?w=2000&h='/></div>):(<>
                         <nav className="navbar navbar-light bg-light">
                               <div className="container-fluid">
                               <img src={logo} alt="logo" />
@@ -300,7 +303,7 @@ const Agent = () => {
                                           </Route>
                                     </Switch>
                                     </div>
-                              </div>
+                              </div></>) }
                         </div>
                         }
             </Router>
