@@ -48,7 +48,7 @@ const Account = () => {
             if(user.typeUtilisateur==='Agent')
                   history.push('/agent');
             if(user.typeUtilisateur==='Franchise')
-                  history.push('/franchise');
+                  history.push('/franchise/produits');
             if(user.typeUtilisateur==='Administrateur')
                   history.push('/administrateur');
       }

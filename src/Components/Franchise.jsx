@@ -5,6 +5,7 @@ import logo from '../Assets/logo.png'
 import axios from 'axios';
 import Modal from 'react-modal'
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom';
+import Error from './Error';
 
 const Agent = () => {
       const [produit,setProduit] = useState({
@@ -16,14 +17,14 @@ const Agent = () => {
         const [tstProduit,setTstProduit] = useState(true);
       const history = useHistory();
       const [login,setLogin] = useState('');
-      const [user,setUser] = useState({});
-      const [typeStorage,setTypeStorage] = useState('');
-      const [search,setSearch] = useState('')
-      const [data,setData] = useState([]);
+      const [idFranchise,setIdFranchise] = useState(0);
+      const [search,setSearch] = useState('');
       const [products,setProducts] = useState([]);
       const [message,setMessage] = useState('');
       const [modalIsOpen, setIsOpen] = useState(false);
+      const [modalIsOpen2, setIsOpen2] = useState(false);
       const [isProduits,setIsProduits] = useState(true);
+      const [agents,setAgents] = useState([])
 
       useEffect(()=>{
             if(document.location.pathname==='/franchise/agents')
@@ -36,14 +37,12 @@ const Agent = () => {
             {
                   setLogin(cook.Utilisateur);
                   getProducts(cook.Utilisateur);
-                  setTypeStorage('cookie');
                   return;
             }
             if(sessionStorage.getItem('Utilisateur')!==null && sessionStorage.getItem('typeUtilisateur') === "Franchise")
             {
                   setLogin(sessionStorage.getItem('Utilisateur'));
                   getProducts(sessionStorage.getItem('Utilisateur'));
-                  setTypeStorage('session');
                   return;
             }
             history.push('/');
@@ -52,13 +51,20 @@ const Agent = () => {
       const getProducts=(login)=>{
             document.title = 'DAHAB - Franchise';
             axios.get(process.env.REACT_APP_API+'utilisateur/user/'+login).then((res)=>{
-                  setUser(res.data);
                   setProduit({...produit,idFranchise:res.data.idType});
+                  setIdFranchise(res.data.idType);
+                  getAgents(res.data.idType);
                   axios.get(process.env.REACT_APP_API+'produits/'+res.data.idType).then((res)=>{
                         setProducts(res.data);
-                        setData(res.data);
                   });
             });
+      }
+
+      const getAgents =(idFranchise)=>{
+            axios.get(process.env.REACT_APP_API+'agent/franchise/'+idFranchise).then(res=>{
+                  setAgents(res.data);
+                  console.log('fwrefer');
+            })
       }
 
       const handleLogout=()=>{
@@ -139,7 +145,7 @@ const Agent = () => {
                                     {login} &nbsp; <i className="fas fa-user"></i>
                                     </button>
                                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                          <Link className="dropdown-item" to="/account">Account &nbsp; <i className="fas fa-cog"></i></Link>
+                                          <label className="dropdown-item" onClick={()=>history.push('/account')} style={{cursor:'pointer'}}>Account &nbsp; <i className="fas fa-cog"></i></label>
                                          <button className=" dropdown-item" onClick={()=>handleLogout()} >Sign Out &nbsp; <i className="fas fa-sign-out-alt"></i></button>
                                     </div>
                               </div>
@@ -218,7 +224,79 @@ const Agent = () => {
                                                             </table>
                                           </Route>
                                           <Route path='/Franchise/agents'>
-                                                blaa
+                                          {message && <div className="alert alert-success" role="alert">
+                                                            {message}
+                                                      </div>}
+                                                      <div className='add-produit'>
+                                                            <button className='btn btn-primary' onClick={()=>setIsOpen2(true)} >Ajouter un agent</button>
+                                                            <Modal
+                                                                  id='AddProductModal'
+                                                                  isOpen={modalIsOpen2}
+                                                                  style={customStyles}
+                                                                  onRequestClose={()=>setIsOpen2(false)}
+                                                            >
+                                                                  <h4 style={{margin:'5px 0 20px 0'}}>Agent</h4>
+                                                                  <div className="input-group mb-3">
+                                                                        <div className="input-group-prepend">
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Nom produit : </span>
+                                                                        </div>
+                                                                        <input id='nameProduit' type="text" className={tstProduit ? "form-control" : 'form-control is-invalid'} aria-describedby="inputGroup-sizing-default" value={produit.nameProduit} onChange={e=>setProduit({...produit,nameProduit:e.target.value})}/>
+                                                                  </div>
+                                                                  <div className="input-group mb-3">
+                                                                        <div className="input-group-prepend">
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Quantite produit : </span>
+                                                                        </div>
+                                                                        <input type="number" className="form-control" aria-describedby="inputGroup-sizing-default" value={produit.qteProduit} onChange={e=>setProduit({...produit,qteProduit:e.target.value})}/>
+                                                                  </div>
+                                                                  <div style={{textAlign:'center',marginTop:5}}>
+                                                                        <button className='btn btn-primary' onClick={()=>handleAddProduct()}>Ajouter</button>
+                                                                  </div>
+                                                            </Modal>
+                                                      </div>
+                                                            <form className='agent-search' onSubmit={e=>handleSearch(e)}>
+                                                                  <input type="text" placeholder='Entrer quelque chose ...' value={search} onChange={e=>setSearch(e.target.value)}/>
+                                                                  <button type="submit" className="btn btn-secondary">Chercher</button>
+                                                            </form>
+                                                            <table className="table table-striped text-center">
+                                                                  <thead>
+                                                                        <tr>
+                                                                              <th>Username</th>
+                                                                              <th>Nom Complet</th>
+                                                                              <th>Numero</th>
+                                                                              <th>Email</th>
+                                                                              <th>Action</th>
+                                                                        </tr>
+                                                                  </thead>
+                                                                  <tbody>
+                                                                        {agents.filter(ag=>ag.nameUtilisateur.includes(search)).map((agent)=>{
+                                                                              return (<tr key={agent.login}>
+                                                                                    <td>{agent.login}</td>
+                                                                                    <td>{agent.nameUtilisateur}</td>
+                                                                                    <td>{agent.numUtilisateur}</td>
+                                                                                    <td>{agent.emailUtilisateur}</td>
+                                                                                    <td className='d-flex gap-1 justify-content-center'>
+                                                                                          <button type="button" className="btn btn-primary" onClick={()=>{}} ><i className="fas fa-user-edit"></i></button>
+                                                                                          <button type="button" className="btn btn-secondary" onClick={()=>{}} ><i className="fas fa-user-lock"></i></button>
+                                                                                          <button type="button" className="btn btn-danger" onClick={()=>{}} ><i className="fas fa-trash"></i></button>
+                                                                                    </td>
+                                                                              </tr>)
+                                                                        })}
+                                                                  </tbody>
+                                                                  {(agents.filter(ag=>ag.nameUtilisateur.includes(search)).length===0 && products.length >0)  && <tfoot>
+                                                                              <tr>
+                                                                                    <td colSpan='3' style={{color:'red'}}>L'agent <strong>{search} </strong> n'existe plus ! </td>
+                                                                              </tr>
+                                                                        </tfoot>}
+                                                                  {products.length===0  && <tfoot>
+                                                                              <tr>
+                                                                                    <td colSpan='3' style={{color:'red'}}>Il n'existe aucun agent pour cette cafe.</td>
+                                                                              </tr>
+                                                                        </tfoot>}
+                                                                  
+                                                            </table>
+                                          </Route>
+                                          <Route path='*' >
+                                                <Link to='/franchise/produits'>Go to produits</Link>
                                           </Route>
                                     </Switch>
                                     </div>
