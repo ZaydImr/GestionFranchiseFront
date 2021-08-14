@@ -5,7 +5,6 @@ import logo from '../Assets/logo.png'
 import axios from 'axios';
 import Modal from 'react-modal'
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom';
-import Error from './Error';
 
 const Agent = () => {
       const [produit,setProduit] = useState({
@@ -14,7 +13,7 @@ const Agent = () => {
             idFranchiseNavigation: null,
             commands: []
         });
-        const [tstProduit,setTstProduit] = useState(true);
+      const [tstProduit,setTstProduit] = useState(true);
       const history = useHistory();
       const [login,setLogin] = useState('');
       const [idFranchise,setIdFranchise] = useState(0);
@@ -25,7 +24,16 @@ const Agent = () => {
       const [modalIsOpen2, setIsOpen2] = useState(false);
       const [isProduits,setIsProduits] = useState(true);
       const [agents,setAgents] = useState([])
-      const [loading,setLoanding] = useState(true)
+      const [loading,setLoanding] = useState(true);
+      const [newUser,setNewUser] = useState({
+            login: '',
+            password: '',
+            nameUtilisateur: '',
+            numUtilisateur: '',
+            emailUtilisateur: '',
+            typeUtilisateur: 'Agent',
+            commands: []
+        });
 
       useEffect(()=>{
             if(document.location.pathname==='/franchise/agents')
@@ -57,16 +65,18 @@ const Agent = () => {
                   getAgents(res.data.idType);
                   axios.get(process.env.REACT_APP_API+'produits/'+res.data.idType).then((res)=>{
                         setProducts(res.data);
-                        setLoanding(false);
-                  });
+                  }).then(()=>setLoanding(false));
             });
       }
 
       const getAgents =(idFranchise)=>{
             axios.get(process.env.REACT_APP_API+'agent/franchise/'+idFranchise).then(res=>{
                   setAgents(res.data);
-                  console.log('fwrefer');
             })
+      }
+
+      const addAgent=()=>{
+            axios.post(process.env.REACT_APP_API+'Utilisateur/'+idFranchise,newUser);
       }
 
       const handleLogout=()=>{
@@ -241,18 +251,36 @@ const Agent = () => {
                                                                   <h4 style={{margin:'5px 0 20px 0'}}>Agent</h4>
                                                                   <div className="input-group mb-3">
                                                                         <div className="input-group-prepend">
-                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Nom produit : </span>
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Username : </span>
                                                                         </div>
-                                                                        <input id='nameProduit' type="text" className={tstProduit ? "form-control" : 'form-control is-invalid'} aria-describedby="inputGroup-sizing-default" value={produit.nameProduit} onChange={e=>setProduit({...produit,nameProduit:e.target.value})}/>
+                                                                        <input id='nameProduit' type="text" className="form-control" aria-describedby="inputGroup-sizing-default" value={newUser.login} onChange={e=>setNewUser({...{newUser},login:e.target.value})}/>
                                                                   </div>
                                                                   <div className="input-group mb-3">
                                                                         <div className="input-group-prepend">
-                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Quantite produit : </span>
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Password : </span>
                                                                         </div>
-                                                                        <input type="number" className="form-control" aria-describedby="inputGroup-sizing-default" value={produit.qteProduit} onChange={e=>setProduit({...produit,qteProduit:e.target.value})}/>
+                                                                        <input id='nameProduit' type="text" className="form-control" aria-describedby="inputGroup-sizing-default" value={newUser.password} onChange={e=>setNewUser({...{newUser},password:e.target.value})}/>
+                                                                  </div>
+                                                                  <div className="input-group mb-3">
+                                                                        <div className="input-group-prepend">
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Username : </span>
+                                                                        </div>
+                                                                        <input id='nameProduit' type="text" className="form-control" aria-describedby="inputGroup-sizing-default" value={newUser.nameUtilisateur} onChange={e=>setNewUser({...{newUser},nameUtilisateur:e.target.value})}/>
+                                                                  </div>
+                                                                  <div className="input-group mb-3">
+                                                                        <div className="input-group-prepend">
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Username : </span>
+                                                                        </div>
+                                                                        <input id='nameProduit' type="text" className="form-control" aria-describedby="inputGroup-sizing-default" value={newUser.numUtilisateur} onChange={e=>setNewUser({...{newUser}, numUtilisateur:e.target.value})}/>
+                                                                  </div>
+                                                                  <div className="input-group mb-3">
+                                                                        <div className="input-group-prepend">
+                                                                              <span className="input-group-text" id="inputGroup-sizing-default">Username : </span>
+                                                                        </div>
+                                                                        <input id='nameProduit' type="text" className="form-control" aria-describedby="inputGroup-sizing-default" value={newUser.emailUtilisateur} onChange={e=>setNewUser({...{newUser},emailUtilisateur:e.target.value})}/>
                                                                   </div>
                                                                   <div style={{textAlign:'center',marginTop:5}}>
-                                                                        <button className='btn btn-primary' onClick={()=>handleAddProduct()}>Ajouter</button>
+                                                                        <button className='btn btn-primary' onClick={()=>addAgent()}>Ajouter</button>
                                                                   </div>
                                                             </Modal>
                                                       </div>
