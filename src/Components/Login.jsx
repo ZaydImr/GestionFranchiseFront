@@ -25,7 +25,8 @@ const Login = () => {
             }
             else
             {
-                  axios.get(apiUrl+username+'+'+password).then(res=>{
+                  axios.get(apiUrl+'login/'+username+'/'+password).then(res=>{
+                        console.log(res);
                         if(res.data==='')
                         {
                               setErrorMessage('Informations invalid !!');
@@ -36,7 +37,9 @@ const Login = () => {
                         {
                               setUser(res.data);
                         }
-                  }).catch(err=>setErrorMessage(err.message));
+                  }).catch(err=>{
+                        console.log(err);
+                        setErrorMessage(err.message)});
             }
       }
       const handleChange=()=>{
