@@ -36,6 +36,7 @@ const Agent = () => {
         });
 
       useEffect(()=>{
+            document.title = 'DAHAB - Franchise';
             if(document.location.pathname==='/franchise/agents')
                   setIsProduits(false);
             let cook = document.cookie
@@ -56,14 +57,14 @@ const Agent = () => {
             }
             history.push('/');
       },[])
-
+      
       const getProducts=(login)=>{
-            document.title = 'DAHAB - Franchise';
             axios.get(process.env.REACT_APP_API+'utilisateur/user/'+login).then((res)=>{
                   setProduit({...produit,idFranchise:res.data.idType});
                   setIdFranchise(res.data.idType);
                   getAgents(res.data.idType);
                   axios.get(process.env.REACT_APP_API+'produits/'+res.data.idType).then((res)=>{
+                        setProducts([]);
                         setProducts(res.data);
                   }).then(()=>setLoanding(false));
             });
@@ -79,6 +80,20 @@ const Agent = () => {
             axios.post(process.env.REACT_APP_API+'Utilisateur/'+idFranchise,newUser);
       }
 
+      const handleAddProduct=()=>{
+            if(produit.nameProduit==='')
+            {
+                  setTstProduit(false);
+                  document.getElementById('nameProduit').focus();
+            }
+            else{
+                  axios.post(process.env.REACT_APP_API+'produits',produit).then(()=>{
+                        setIsOpen(false);
+                        getProducts(login);
+                  }
+                  );
+            }
+      }
       const handleLogout=()=>{
              document.cookie = 'Utilisateur=null; expires='+new Date(2000,1,1).toUTCString();
             document.cookie = 'typeUtilisateur=null; expires='+new Date(2000,1,1).toUTCString();
@@ -119,20 +134,6 @@ const Agent = () => {
             },
           };
 
-      const handleAddProduct=()=>{
-            if(produit.nameProduit==='')
-            {
-                  setTstProduit(false);
-                  document.getElementById('nameProduit').focus();
-            }
-            else{
-                  axios.post(process.env.REACT_APP_API+'produits',produit).then(()=>{
-                        setIsOpen(false);
-                        getProducts(login);
-                  }
-                  );
-            }
-      }
 
       useEffect(()=>{
             setTstProduit(true);
@@ -141,7 +142,7 @@ const Agent = () => {
       return (
             <Router>
                   {login && <div>
-                        {loading ? (<div className='loading'><img src='https://motiongraphicsphoebe.files.wordpress.com/2018/10/loading-animations-preloader-gifs-ui-ux-effects-18.gif?w=2000&h='/></div>):(<>
+                        {loading ? (<div className='loading'><img src='https://motiongraphicsphoebe.files.wordpress.com/2018/10/loading-animations-preloader-gifs-ui-ux-effects-18.gif?w=2000&h=' alt='loading'/></div>):(<>
                         <nav className="navbar navbar-light bg-light">
                               <div className="container-fluid">
                               <img src={logo} alt="logo" />
@@ -202,7 +203,7 @@ const Agent = () => {
                                                                   <input type="text" placeholder='Entrer quelque chose ...' value={search} onChange={e=>setSearch(e.target.value)}/>
                                                                   <button type="submit" className="btn btn-secondary">Chercher</button>
                                                             </form>
-                                                            <table className="table table-striped text-center">
+                                                            <table className="table text-center">
                                                                   <thead>
                                                                         <tr>
                                                                               <th>Produit</th>
@@ -211,13 +212,13 @@ const Agent = () => {
                                                                         </tr>
                                                                   </thead>
                                                                   <tbody>
-                                                                        {products.filter(prod=>prod.nameProduit.includes(search)).map((product)=>{
-                                                                              return (<tr key={product.idProduit}>
+                                                                        {products.filter(prod=>prod.nameProduit.includes(search)).sort((a,b) => (a.qteProduit > b.qteProduit) ? 1 : ((b.qteProduit > a.qteProduit) ? -1 : 0)).map((product)=>{
+                                                                              return (<tr key={product.idProduit} className={product.qteProduit<10 ? 'line-danger' : (product.qteProduit<25 ? 'line-warning' : '')}>
                                                                                     <td>{product.nameProduit}</td>
                                                                                     <td><input type="number" style={{backgroundColor:'transparent',border:'none',maxWidth:65}} defaultValue={product.qteProduit} onBlur={e=>handleChangeProd(product,e.target.value)}/> </td>
-                                                                                    <td className='d-flex gap-1 justify-content-center'>
-                                                                                          <button type="button" className="btn btn-secondary" onClick={()=>{handleChangeProd(product,product.qteProduit-1);}} ><i className="fas fa-minus"></i></button>
-                                                                                          <button type="button" className="btn btn-success" onClick={()=>{handleChangeProd(product,product.qteProduit+1);}} ><i className="fas fa-plus"></i></button>
+                                                                                    <td className='justify-content-center'>
+                                                                                          <button type="button" className="btn btn-secondary mr-1" onClick={()=>{handleChangeProd(product,product.qteProduit-1);}} ><i className="fas fa-minus"></i></button>
+                                                                                          <button type="button" className="btn btn-success mr-1" onClick={()=>{handleChangeProd(product,product.qteProduit+1);}} ><i className="fas fa-plus"></i></button>
                                                                                           <button type="button" className="btn btn-danger" onClick={()=>handleDeleteProd(product.nameProduit,product.idProduit)} ><i className="fas fa-trash"></i></button>
                                                                                     </td>
                                                                               </tr>)

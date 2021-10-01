@@ -48,3 +48,9 @@
 .agent .btn{
       padding: 1px 6px !important;
 }
+.line-danger{
+      background-color: #e4848d !important;
+}
+.line-warning{
+      background-color: #fbd35c !important;
+}

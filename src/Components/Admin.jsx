@@ -14,13 +14,11 @@ const Admin = () => {
             if(cook.Utilisateur!==undefined && cook.typeUtilisateur === "Administrateur")
             {
                   setLogin(cook.Utilisateur);
-                  console.log('cookie nice');
                   return;
             }
             if(sessionStorage.getItem('Utilisateur')!==null && sessionStorage.getItem('typeUtilisateur') === "Administrateur")
             {
                   setLogin(sessionStorage.getItem('Utilisateur'));
-                  console.log('session nice');
                   return;
             }
             history.push('/');
@@ -28,8 +26,9 @@ const Admin = () => {
 
       return (
             <>
-                  {login && <div>
-                              admin
+                  {login && <div style={{display:'flex',justifyContent:'center',alignItems:'center',height:'100vh',width:'100vw',flexDirection:'column'}}>
+                              <div className="alert alert-warning" role="alert">Admin page still on work</div>
+                              <button className="btn btn-secondary" onClick={()=>{history.push('/');}}>Go back</button>
                         </div>}
             </>
       )

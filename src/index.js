@@ -8,6 +8,7 @@ import Franchise from './Components/Franchise';
 import Agent from './Components/Agent';
 import Error from './Components/Error';
 import Account from './Components/Account';
+import Footer from './Components/Footer';
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom'
 
 ReactDOM.render(
@@ -21,9 +22,9 @@ ReactDOM.render(
         <Route path='/franchise'  component={Franchise}  />
         <Route path='/account' component={Account} />
         <Route path='*' component={Error} />
-
       </Switch>
     </Router>
+    <Footer/>
   </React.StrictMode>,
   document.getElementById('root')
 );

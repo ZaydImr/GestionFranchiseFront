@@ -1,0 +1,9 @@
+footer a{
+    transition: .3s;
+    color: #151921;
+    text-decoration:none;
+}
+footer a:hover{
+    font-size: large;
+    font-weight: 600;
+}

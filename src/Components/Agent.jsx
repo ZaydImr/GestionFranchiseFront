@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import './Agent.css'
 import logo from '../Assets/logo.png'
 import axios from 'axios';
 
 const Agent = () => {
-      const [qte,setQte] = useState(0);
       const history = useHistory();
       const [login,setLogin] = useState('');
-      const [user,setUser] = useState({});
-      const [typeStorage,setTypeStorage] = useState('');
       const [search,setSearch] = useState('')
-      const [data,setData] = useState([]);
       const [products,setProducts] = useState([]);
       const [message,setMessage] = useState('');
+      const [loading,setLoading] = useState(true);
 
       useEffect(()=>{
+            document.title = 'DAHAB - Agent';
             let cook = document.cookie
                   .split(';')
                   .map(cookie => cookie.split('='))
@@ -24,14 +22,12 @@ const Agent = () => {
             {
                   setLogin(cook.Utilisateur);
                   getProducts(cook.Utilisateur);
-                  setTypeStorage('cookie');
                   return;
             }
             if(sessionStorage.getItem('Utilisateur')!==null && sessionStorage.getItem('typeUtilisateur') === "Agent")
             {
                   setLogin(sessionStorage.getItem('Utilisateur'));
                   getProducts(sessionStorage.getItem('Utilisateur'));
-                  setTypeStorage('session');
                   return;
             }
             history.push('/');
@@ -39,10 +35,10 @@ const Agent = () => {
 
       const getProducts=(login)=>{
             axios.get(process.env.REACT_APP_API+'Agent/'+login).then((res)=>{
-                  setUser(res.data);
                   axios.get(process.env.REACT_APP_API+'produits/'+res.data.idFranchise).then((res)=>{
+                        setProducts([]);
                         setProducts(res.data);
-                        setData(res.data);
+                        setLoading(false)
                   });
             });
       }
@@ -62,15 +58,15 @@ const Agent = () => {
       const handleChangeProd =(produit,newValue)=>{
             produit.qteProduit = newValue;
             axios.put(process.env.REACT_APP_API+'Produits/'+login,produit).then(()=>{
-                        getProducts(login);
                         setMessage('Le produit '+produit.nameProduit+' a ete bien modifier avec quantite : '+produit.qteProduit+'.');
                         let res = setTimeout(()=>{setMessage('');clearTimeout(res);},3000);
-            })
+            }).then(()=>getProducts(login));
       }
 
       return (
             <>
                   {login && <div>
+                        {loading ? (<div className='loading'><img src='https://motiongraphicsphoebe.files.wordpress.com/2018/10/loading-animations-preloader-gifs-ui-ux-effects-18.gif?w=2000&h=' alt='loading'/></div>):(<>
                         <nav className="navbar navbar-light bg-light">
                               <div className="container-fluid">
                               <img src={logo} alt="logo" />
@@ -94,7 +90,7 @@ const Agent = () => {
                                           <input type="text" placeholder='Entrer quelque chose ...' value={search} onChange={e=>setSearch(e.target.value)}/>
                                           <button type="submit" className="btn btn-secondary">Chercher</button>
                                     </form>
-                                    <table className="table table-striped text-center">
+                                    <table className="table text-center">
                                           <thead>
                                                 <tr>
                                                       <th>Produit</th>
@@ -103,30 +99,31 @@ const Agent = () => {
                                                 </tr>
                                           </thead>
                                           <tbody>
-                                                {products.filter(prod=>prod.nameProduit.includes(search)).map((product)=>{
-                                                      return (<tr key={product.idProduit}>
+                                                {products.filter(prod=>prod.nameProduit.includes(search)).sort((a,b) => (a.qteProduit > b.qteProduit) ? 1 : ((b.qteProduit > a.qteProduit) ? -1 : 0)).map((product)=>{
+
+                                                      return (<tr key={product.idProduit} className={product.qteProduit<10 ? 'line-danger' : (product.qteProduit<25 ? 'line-warning' : '')}>
                                                             <td>{product.nameProduit}</td>
-                                                            <td><input type="number" style={{backgroundColor:'transparent',border:'none',maxWidth:65}} defaultValue={product.qteProduit} onBlur={e=>handleChangeProd(product,e.target.value)}/> </td>
-                                                            <td className='d-flex gap-1 justify-content-center'>
-                                                                  <button type="button" className="btn btn-danger" onClick={()=>{handleChangeProd(product,product.qteProduit-1);}} ><i className="fas fa-minus"></i></button>
+                                                            <td><input type="number" style={{backgroundColor:'transparent',border:'none',maxWidth:65}} defaultValue={product.qteProduit} onBlur={e=>{handleChangeProd(product,e.target.value);}}/></td>
+                                                            <td className='justify-content-center'>
+                                                                  <button type="button" className='btn btn-danger mr-1' onClick={()=>{handleChangeProd(product,product.qteProduit-1);}} ><i className="fas fa-minus"></i></button>
                                                                   <button type="button" className="btn btn-success" onClick={()=>{handleChangeProd(product,product.qteProduit+1);}} ><i className="fas fa-plus"></i></button>
                                                             </td>
                                                       </tr>)
                                                 })}
                                           </tbody>
-                                          {(products.filter(prod=>prod.nameProduit.includes(search)).length==0 && products.length >0)  && <tfoot>
+                                          {(products.filter(prod=>prod.nameProduit.includes(search)).length===0 && products.length >0)  && <tfoot>
                                                       <tr>
                                                             <td colSpan='3' style={{color:'red'}}>Le produit <strong>{search} </strong> n'existe plus ! </td>
                                                       </tr>
                                                 </tfoot>}
-                                          {products.length==0  && <tfoot>
+                                          {products.length===0  && <tfoot>
                                                       <tr>
                                                             <td colSpan='3' style={{color:'red'}}>Il n'existe aucun produit pour cette cafe.</td>
                                                       </tr>
                                                 </tfoot>}
                                           
                                     </table>
-                              </div></div>
+                              </div></div></>)}
                         </div>}
             </>
       )

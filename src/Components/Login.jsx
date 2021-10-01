@@ -44,6 +44,7 @@ const Login = () => {
       }
 
       useEffect(()=>{
+            document.title = 'DAHAB - Login';
             if(user !== [] )
             {
                   if(remember)
