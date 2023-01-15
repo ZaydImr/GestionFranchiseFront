@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react'
 import './Login.css'
 import logo from '../Assets/logo.png'
 import axios from 'axios'
-import {useHistory} from 'react-router-dom'   
+import {useHistory} from 'react-router-dom'  
 
 
 
-const Login = () => {
+const Login = () => {      
       const [reset,setReset] = useState(true);
       const [username,setUsername] = useState('');
       const [password,setPassword] = useState('');
       const [remember,setRemember] = useState(false);
       const [errorMessage,setErrorMessage] = useState('');
       const [user,setUser] = useState([]);
-      const apiUrl = process.env.REACT_APP_API+'Utilisateur/';
+      const apiUrl = process.env.REACT_APP_API+'user/';
       const history = useHistory();
 
       const handleClick = (e)=>{

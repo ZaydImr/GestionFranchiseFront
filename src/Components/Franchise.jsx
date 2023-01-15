@@ -59,7 +59,7 @@ const Agent = () => {
       },[])
       
       const getProducts=(login)=>{
-            axios.get(process.env.REACT_APP_API+'utilisateur/user/'+login).then((res)=>{
+            axios.get(process.env.REACT_APP_API+'user/'+login).then((res)=>{
                   setProduit({...produit,idFranchise:res.data.idType});
                   setIdFranchise(res.data.idType);
                   getAgents(res.data.idType);
@@ -77,7 +77,7 @@ const Agent = () => {
       }
 
       const addAgent=()=>{
-            axios.post(process.env.REACT_APP_API+'Utilisateur/'+idFranchise,newUser);
+            axios.post(process.env.REACT_APP_API+'user/'+idFranchise,newUser);
       }
 
       const handleAddProduct=()=>{
